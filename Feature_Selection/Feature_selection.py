@@ -14,60 +14,27 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from itertools import compress
 
 print("*"*50)
-print("Read data using .read_csv file")
+print("Read Csv file")
 print("*"*50)
-df = pd.read_csv("adult.csv")
-print(df.isnull().sum())
+df = pd.read_csv("train.csv")
 
 print("*"*50)
 print("Reading in the dataset and stored as df, Keeping a copy of original df as df_original")
 print("*"*50)
 df_original  = df.copy()
-print(df.head())
-print(df.shape)
+print(df_original.head())
+print(df_original.shape)
 
 print("*"*50)
-print("Convert all text to lower case")
+print("Check count for missing values in each column")
 print("*"*50)
-df_original  = df.copy()
-print(df.head())
-print(df.shape)
+print(df.isnull().sum())
 
 print("*"*50)
-print("get the list of columns which have questions marks")
+print("Create a dataset and remove the last column")
 print("*"*50)
-cols = df.isin(['?']).any()[df.isin(['?']).any()==True].index.tolist()
-print(cols)
-
-print("*"*50)
-print("replace clean method")
-print("*"*50)
-def replace_clean(df, column_name, punctuation_symbol):
-    m = df[(df[column_name]!=punctuation_symbol)][column_name].mode()[0]
-    df[column_name] = df[column_name].replace(punctuation_symbol, m)
-    return df
-
-print("*"*50)
-print("Loop over list of columns and replace question mark with mode value")
-print("*"*50)
-for x in cols:
-     replace_clean(df,x,"?")
-cols = df.isin(['?']).any()[df.isin(['?']).any()==True].index.tolist()
-print(cols)
-
-
-print("*"*50)
-print("Label encoding the first column")
-print("*"*50)
-labelencoder_y = LabelEncoder()
-df["income"] =  labelencoder_y.fit_transform(df["income"])
-print(df.shape)
-
-print("*"*50)
-print("Define X and Y")
-print("*"*50)
-X = df.drop(["income"],1)
-y = df["income"]
+X = df.iloc[:,:-1]
+y =  df.iloc[:, 10]
 print(X)
 print(y)
 
@@ -80,10 +47,11 @@ print(X_number.head())
 print(X_Category.head())
 
 print("*"*50)
-print("Scale the numerical categories")
+print("Scale the numerical features")
 print("*"*50)
 scaler = StandardScaler()
 X_number = pd.DataFrame(scaler.fit_transform(X_number), columns=list(X_number))
+print(X_number.head())
 
 print("*"*50)
 print("One hot encoding the categorical values")
@@ -92,7 +60,7 @@ X_Category = pd.get_dummies(X_Category, drop_first=True)
 print(X_Category.shape)
 
 print("*"*50)
-print("Concatinating numerical and categorical data frame")
+print("Concatenating numerical and categorical data frame")
 print("*"*50)
 X= pd.concat([X_number,X_Category],1)
 print(X.shape)
@@ -161,7 +129,6 @@ print("*"*50)
 print("Find the ROC AUC score")
 print("*"*50)
 print (roc_auc_score(y_test,y_pred))
-
 
 # print("*"*50)
 # print("Statistical model for sm to check for P value(Wald test) and to get the Mc faddens Pseudo R2 score")

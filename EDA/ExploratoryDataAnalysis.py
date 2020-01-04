@@ -7,7 +7,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from scipy import stats
 import statsmodels.api as sm
 def standard_err(y_true,y_pred):
@@ -55,6 +55,30 @@ X_number = pd.DataFrame(scaler.fit_transform(X_number), columns=list(X_number))
 print(X_number.head())
 
 print("*"*50)
+print("Label Encoding the categorical values")
+print("*"*50)
+X_Category_label_encoded = X_Category.copy()
+le = LabelEncoder()
+X_Category_label_encoded["Agency"]= le.fit_transform(X_Category_label_encoded["Agency"])
+le = LabelEncoder()
+X_Category_label_encoded["Agency Type"]= le.fit_transform(X_Category_label_encoded["Agency Type"])
+le = LabelEncoder()
+X_Category_label_encoded["Distribution Channel"]= le.fit_transform(X_Category_label_encoded["Distribution Channel"])
+le = LabelEncoder()
+X_Category_label_encoded["Product Name"]= le.fit_transform(X_Category_label_encoded["Product Name"])
+
+print("*"*50)
+print("concatenating numerical and categorical data frame")
+print("*"*50)
+X_label_encoded = pd.concat([X_number,X_Category_label_encoded],1)
+print(X_label_encoded.shape)
+
+print("*"*50)
+print("Seaborn pairplot")
+print("*"*50)
+sns.pairplot(X_label_encoded, vars=['Agency', 'Agency Type'])
+
+print("*"*50)
 print("One hot encoding the categorical values")
 print("*"*50)
 X_Category = pd.get_dummies(X_Category, drop_first=True)
@@ -77,18 +101,16 @@ print(knn.score(X_test,y_test))
 print("*"*50)
 print("Apply KNN with cross validation and Gridsearch CV to get the best estimator")
 print("*"*50)
-print(cross_val_score(knn,X,y,cv=10))
-knn = KNeighborsClassifier()
-params = {"n_neighbors":np.arange(1,10,1), "metric":["euclidean", "minkowski", "jaccard", "cosine"]}
-knn_cv = GridSearchCV(estimator=knn, param_grid=params, cv = 10)
-knn_cv.fit(X,y)
-print(knn_cv.best_params_)
-print(knn_cv.best_estimator_)
+# print(cross_val_score(knn,X,y,cv=10))
+# knn = KNeighborsClassifier()
+# params = {"n_neighbors":np.arange(1,10,1), "metric":["euclidean", "minkowski", "jaccard", "cosine"]}
+# knn_cv = GridSearchCV(estimator=knn, param_grid=params, cv = 10)
+# knn_cv.fit(X,y)
+# print(knn_cv.best_params_)
+# print(knn_cv.best_estimator_)
 
-print("*"*50)
-print("Seaborn pairplot")
-print("*"*50)
-# sns.pairplot(df)
+
+
 
 print("*"*50)
 print("Seaborn heatmap")
