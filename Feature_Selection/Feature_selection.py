@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 import warnings
 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
+
 warnings.filterwarnings("ignore")
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
@@ -106,7 +109,7 @@ print("*"*50)
 print("Apply Logistic Regression with class weight parameter to address the class imbalance issue."
       "After changing the class weight recall parameter of classification report has been increased.")
 print("*"*50)
-log_reg = LogisticRegression(random_state=42,class_weight="balanced")
+log_reg = LogisticRegression(random_state=42,class_weight="balanced",C=1000)
 X_train, X_test, y_train, y_test = tts(X,y,test_size = 0.25, random_state = 42)
 model = log_reg.fit(X_train,y_train)
 y_pred = model.predict(X_test)
@@ -167,4 +170,26 @@ boolean = rfe.get_support().tolist()
 features_3 = list(compress(list(X), boolean))
 print(features_3)
 
+print("*"*50)
+print("Using GridSearch CV to the best estimaor for Decision tree")
+print("*"*50)
+model2 = DecisionTreeClassifier(random_state=42)
+params = {"criterion":["gini", "entropy"], "max_depth":np.arange(2,8),"min_samples_split":np.arange(0.01, 0.1, 0.01)}
+model2_cv = GridSearchCV(estimator=model2, param_grid = params, cv = 5)
+model2_cv.fit(X,y)
+print(model2_cv.best_score_)
+print(model2_cv.best_params_)
+model2= model2_cv.best_estimator_
+print(model2)
+print(model2.feature_importances_)
 
+print("*"*50)
+print("Executing Random Forest classifier")
+print("*"*50)
+rfc = RandomForestClassifier(random_state=42, criterion = "gini", max_depth=7, min_samples_split=0.01, oob_score = True, n_estimators = 40, class_weight = "balanced")
+rfc.fit(X_train,y_train)
+y_pred = rfc.predict(X_test)
+rfc.score(X_test,y_test)
+print (classification_report(y_test,y_pred))
+print(accuracy_score(y_test,y_pred))
+print(rfc.feature_importances_)
