@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 import warnings
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.linear_model import LinearRegression
 
 warnings.filterwarnings("ignore")
@@ -20,6 +21,32 @@ print("*"*50)
 df_original  = df.copy()
 print(df_original.head())
 print(df_original.shape)
+print(df_original.info())
+
+print("*"*50)
+print("Reading in the dataset and stored as df, Keeping a copy of original df as df_original")
+print("*"*50)
+cols_con = df.select_dtypes(['int64','float64']).drop('Claim',1)
+cols_non_con = df.select_dtypes(['object'])
+
+# n=1
+# for j in cols_non_con.columns:
+#     plt.figure(figsize=(40,10))
+#     plt.subplot(3,2,n)
+#     sns.countplot(df[j],hue=df['Claim'])
+#     plt.title('Count plot for '+j,fontsize=20)
+#     n+=1
+#     plt.xticks(rotation=90,fontsize=12)
+#     plt.show()
+
+n = 1
+plt.figure(figsize = (20,16))
+for i in cols_con.columns:
+    plt.subplot(3,2,n)
+    sns.distplot(df[i])
+    plt.title('Distribution for '+i,fontsize=20)
+    n+=1
+    plt.show()
 
 print("*"*50)
 print("Check count for missing values in each column")
@@ -61,11 +88,3 @@ print("*"*50)
 X = pd.concat([X_number,X_Category],1)
 print(X.shape)
 
-print("*"*50)
-print("Train test Split on this data")
-print("*"*50)
-lin_reg = LinearRegression()
-X_train, X_test , y_train, y_test = train_test_split(X,y,test_size=0.25,random_state=21)
-lin_reg.fit(X,y)
-# y_pred = lin_reg.predict(X_test)
-print(lin_reg.score(X,y))

@@ -59,6 +59,7 @@ print(X_number.head())
 print("*"*50)
 print("One hot encoding the categorical values")
 print("*"*50)
+
 X_Category = pd.get_dummies(X_Category, drop_first=True)
 print(X_Category.shape)
 
@@ -133,16 +134,16 @@ print("Find the ROC AUC score")
 print("*"*50)
 print (roc_auc_score(y_test,y_pred))
 
-# print("*"*50)
-# print("Statistical model for sm to check for P value(Wald test) and to get the Mc faddens Pseudo R2 score")
-# print("*"*50)
-# X_sm = sm.add_constant(X)
-# model = sm.Logit(y,X_sm).fit()
-# drop = list(X_sm)
-# drop.remove("Age")
-# X_new = X_sm[drop]
-# model = sm.Logit(y,X_new).fit()
-# model.summary()
+print("*"*50)
+print("Statistical model for sm to check for P value(Wald test) and to get the Mc faddens Pseudo R2 score")
+print("*"*50)
+X_sm = sm.add_constant(X)
+model = sm.Logit(y,X_sm).fit()
+drop = list(X_sm)
+drop.remove("Age")
+X_new = X_sm[drop]
+model = sm.Logit(y,X_new).fit()
+model.summary()
 
 print("*"*50)
 print("Using SelectKBest library to get the best features using the statistical analysis for numerical and categorical input data and using score functions as f_classif"
