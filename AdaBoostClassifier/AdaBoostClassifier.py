@@ -134,10 +134,20 @@ print('recall Score for decision model is',recall_score(y_test,dt_pred,average='
 # print('precision Score for adaboost model is',precision_score(y_test,y_pred_adaboost,average='weighted'))
 # print('recall Score for adaboost model is',recall_score(y_test,y_pred_adaboost,average='weighted'))
 
-ada_clf = AdaBoostClassifier(base_estimator=dt2,random_state=42,learning_rate=0.3,n_estimators=150)
-ada_clf.fit(X,y)
-y_pred_adaboost_final = ada_clf.predict(X1)
-y_pred_adaboost_proba_final = np.array(pd.DataFrame(ada_clf.predict_proba(X_test)).iloc[:,1])
-output=pd.DataFrame(data={"ID":df_test["ID"],"Claim":y_pred_adaboost_final})
-output.to_csv(r"results.csv")
+# ada_clf = AdaBoostClassifier(base_estimator=dt2,random_state=42,learning_rate=0.3,n_estimators=150)
+# ada_clf.fit(X,y)
+# y_pred_adaboost_final = ada_clf.predict(X1)
+# y_pred_adaboost_proba_final = np.array(pd.DataFrame(ada_clf.predict_proba(X_test)).iloc[:,1])
 
+
+rf_clf = RandomForestClassifier(random_state = 264,criterion='gini', max_depth=7,n_estimators= 151,class_weight='balanced')
+bagging_clf = BaggingClassifier(rf_clf, random_state=42,n_estimators=100,max_samples=11800)
+bagging_clf.fit(X,y)
+y_valid = bagging_clf.predict(X1)
+
+submission = pd.read_csv('sample_submission.csv')
+print(submission['Claim'].shape)
+submission['Claim'] = y_valid
+
+output=pd.DataFrame(submission)
+output.to_csv(r"results.csv",index=False)

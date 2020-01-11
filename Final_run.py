@@ -217,3 +217,15 @@ plt.xlabel('Models',fontsize=13)
 plt.ylabel('Scores',fontsize=13)
 plt.show()
 
+recall_score_df = pd.DataFrame()
+recall_score_df['Models'] = ['Logistic','DecisionTree','RandomForest','Bagging','AdaBoost']
+recall_score_df['recall_score'] = [recall_score(y_test,y_pred_lr,average='weighted'),recall_score(y_test,dt_pred,average='weighted'),recall_score(y_test,y_pred_rf,average='weighted'),recall_score(y_test,y_pred_bagging,average='weighted'),recall_score(y_test,y_pred_ada_gs,average='weighted')]
+
+plt.figure(figsize=(16,7))
+plt.bar(recall_score_df['Models'],recall_score_df['recall_score'])
+plt.title('recall_score',fontsize=15)
+plt.xlabel('Models',fontsize=13)
+plt.ylabel('Scores',fontsize=13)
+plt.show()
+
+print(recall_score_df)
