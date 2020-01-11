@@ -140,8 +140,8 @@ print('recall Score for decision model is',recall_score(y_test,dt_pred,average='
 # y_pred_adaboost_proba_final = np.array(pd.DataFrame(ada_clf.predict_proba(X_test)).iloc[:,1])
 
 
-rf_clf = RandomForestClassifier(random_state = 264,criterion='gini', max_depth=7,n_estimators= 151,class_weight='balanced')
-bagging_clf = BaggingClassifier(rf_clf, random_state=42,n_estimators=100,max_samples=11800)
+rf_clf = RandomForestClassifier(random_state = 42,criterion='entropy', max_depth=2,n_estimators= 111,class_weight='balanced')
+bagging_clf = BaggingClassifier(rf_clf, random_state=42,n_estimators=100,max_samples=12000)
 bagging_clf.fit(X,y)
 y_valid = bagging_clf.predict(X1)
 
