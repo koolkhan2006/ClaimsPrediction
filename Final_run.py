@@ -179,8 +179,6 @@ print('precision Score for bagging model is',precision_score(y_test,y_pred_baggi
 print('recall Score for bagging model is',recall_score(y_test,y_pred_bagging,average='weighted'))
 
 parameters={'learning_rate':[0.1,0.3,0.6,0.8,1.0],'n_estimators':[50,100,150]}
-
-dt_clf=DecisionTreeClassifier(criterion='gini',random_state = 12,max_depth=1,class_weight='balanced')
 ada_clf = AdaBoostClassifier(base_estimator=dt2,random_state=42)
 
 clf_model_ada=GridSearchCV(estimator=ada_clf,param_grid=parameters,scoring='roc_auc')
@@ -210,9 +208,12 @@ precision_score_df = pd.DataFrame()
 precision_score_df['Models'] = ['Logistic','DecisionTree','RandomForest','Bagging','AdaBoost']
 precision_score_df['precision_score'] = [precision_score(y_test,y_pred_lr,average='weighted'),precision_score(y_test,dt_pred,average='weighted'),precision_score(y_test,y_pred_rf,average='weighted'),precision_score(y_test,y_pred_bagging,average='weighted'),precision_score(y_test,y_pred_ada_gs,average='weighted')]
 
+print(precision_score_df)
+
 plt.figure(figsize=(16,7))
 plt.bar(precision_score_df['Models'],precision_score_df['precision_score'])
 plt.title('precision_score',fontsize=15)
 plt.xlabel('Models',fontsize=13)
 plt.ylabel('Scores',fontsize=13)
 plt.show()
+
